@@ -244,7 +244,7 @@ def parse_creative_report(content):
     
     data['top_performers'] = top_performers_list
     
-    # Extract location performance
+    # Extract location performance (optional)
     location_section = re.search(
         r'\|\| Location \| Videos \| Purchases \| Cost/Purchase \| Spend \|\n'
         r'\|\|----------|--------|-----------|---------------|-------\|\n'
@@ -252,21 +252,25 @@ def parse_creative_report(content):
         content
     )
     
-    if location_section:
-        location_rows = location_section.group(1).strip().split('\n')
-        for row in location_rows:
-            parts = [p.strip() for p in row.split('|') if p.strip()]
-            if len(parts) >= 5:
-                try:
-                    data['locations'].append({
-                        'location': parts[0],
-                        'videos': int(parts[1]),
-                        'purchases': int(parts[2]),
-                        'cost_per_purchase': float(parts[3].replace('$', '').replace(',', '')),
-                        'spend': float(parts[4].replace('$', '').replace(',', ''))
-                    })
-                except ValueError:
-                    continue
+    if location_section and location_section.group(1):
+        try:
+            location_rows = location_section.group(1).strip().split('\n')
+            for row in location_rows:
+                parts = [p.strip() for p in row.split('|') if p.strip()]
+                if len(parts) >= 5:
+                    try:
+                        data['locations'].append({
+                            'location': parts[0],
+                            'videos': int(parts[1]),
+                            'purchases': int(parts[2]),
+                            'cost_per_purchase': float(parts[3].replace('$', '').replace(',', '')),
+                            'spend': float(parts[4].replace('$', '').replace(',', ''))
+                        })
+                    except ValueError:
+                        continue
+        except AttributeError:
+            # Location section not found or malformed - skip it
+            pass
     
     return data
 
