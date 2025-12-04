@@ -206,20 +206,43 @@ def parse_creative_report(content):
         if roas:
             data['conversion_metrics']['roas'] = float(roas.group(1))
     
-    # Extract top performers
-    performer_pattern = re.compile(
-        r'### #(\d+)\. Lowest Cost Per Purchase: \$([0-9,\.]+)\n\n'
-        r'\*\*(.+?)\*\*\n\n'
-        r'.*?\*\*💰 Spend:\*\* \$([0-9,\.]+)\s+\n\n'
-        r'\*\*🔄 Conversion Funnel:\*\*\n'
-        r'- \*\*Content Views:\*\* ([0-9,]+).*?\n'
-        r'- \*\*Add to Cart:\*\* ([0-9,]+).*?\n'
-        r'- \*\*Initiate Checkout:\*\* ([0-9,]+).*?\n'
-        r'- \*\*Purchases:\*\* ([0-9,]+).*?\n\n'
-        r'\*\*📈 ROAS:\*\* ([0-9\.]+)x\s+\n\n'
-        r'\*\*🎣 Hook Rate:\*\* ([0-9\.]+)%',
-        re.DOTALL
-    )
+    # Extract top performers - more flexible pattern
+    performer_sections = re.split(r'###\s+#(\d+)\.\s+Lowest Cost Per Purchase:\s+\$([0-9,\.]+)', content)
+    
+    # Process each top performer section
+    top_performers_list = []
+    for i in range(1, len(performer_sections), 3):
+        if i+2 < len(performer_sections):
+            rank = int(performer_sections[i])
+            cpp = float(performer_sections[i+1].replace(',', ''))
+            section = performer_sections[i+2]
+            
+            # Extract data from this section
+            name_match = re.search(r'^\n\*\*(.+?)\*\*', section)
+            spend_match = re.search(r'\*\*💰 Spend:\*\* \$([0-9,\.]+)', section)
+            cv_match = re.search(r'- \*\*Content Views:\*\* ([0-9,]+)', section)
+            atc_match = re.search(r'- \*\*Add to Cart:\*\* ([0-9,]+)', section)
+            ic_match = re.search(r'- \*\*Initiate Checkout:\*\* ([0-9,]+)', section)
+            purchases_match = re.search(r'- \*\*Purchases:\*\* ([0-9,]+)', section)
+            roas_match = re.search(r'\*\*📈 ROAS:\*\* ([0-9\.]+)x', section)
+            hook_match = re.search(r'\*\*🎣 Hook Rate:\*\* ([0-9\.]+)%', section)
+            
+            if all([name_match, spend_match, cv_match, atc_match, ic_match, purchases_match, roas_match, hook_match]):
+                performer = {
+                    'rank': rank,
+                    'cost_per_purchase': cpp,
+                    'name': name_match.group(1).strip(),
+                    'spend': float(spend_match.group(1).replace(',', '')),
+                    'content_views': int(cv_match.group(1).replace(',', '')),
+                    'adds_to_cart': int(atc_match.group(1).replace(',', '')),
+                    'checkouts': int(ic_match.group(1).replace(',', '')),
+                    'purchases': int(purchases_match.group(1).replace(',', '')),
+                    'roas': float(roas_match.group(1)),
+                    'hook_rate': float(hook_match.group(1))
+                }
+                top_performers_list.append(performer)
+    
+    data['top_performers'] = top_performers_list
     
     for match in performer_pattern.finditer(content):
         performer = {
