@@ -1,19 +1,13 @@
 """
-Eskiin Creative Performance Dashboard
-Interactive visualization for creative team reports
+Eskiin Analytics Dashboard
+Interactive visualization for creative and ad set reports
+
+Automatically detects report type:
+- Creative Performance Reports (with video analysis)
+- Ad Set Testing Reports (creative testing campaigns)
 
 Usage:
-    # Local mode (reads from data/ads/)
-    streamlit run creative_dashboard.py
-    
-    # Cloud mode (file upload or demo)
-    Deploy to Streamlit Cloud - users upload their own reports
-
-Deploy to Streamlit Cloud:
-    1. Push this file to GitHub (public repo)
-    2. Make sure data/ads/ is in .gitignore
-    3. Connect repo to Streamlit Cloud
-    4. Users can upload reports or view demo data
+    streamlit run streamlit_app.py
 """
 
 import streamlit as st
@@ -31,8 +25,8 @@ import io
 # ============================================================================
 
 st.set_page_config(
-    page_title="Eskiin Creative Performance",
-    page_icon="🎬",
+    page_title="Eskiin Analytics Dashboard",
+    page_icon="📊",
     layout="wide",
     initial_sidebar_state="expanded"
 )
@@ -129,6 +123,18 @@ def generate_demo_report():
 || Outdoor Setting | 4 | 600 | $85.00 | $51,000 |
 || Home Interior | 3 | 400 | $95.00 | $38,000 |
 """
+
+# ============================================================================
+# Report Type Detection
+# ============================================================================
+
+def detect_report_type(content):
+    """Detect if this is a creative performance or ad set testing report"""
+    if "Creative Testing Ad Sets Report" in content or "## Ad Sets" in content:
+        return "adset_testing"
+    elif "Creative Performance Report" in content or "## 🏆 Top Performers Deep Dive" in content:
+        return "creative_performance"
+    return "unknown"
 
 # ============================================================================
 # Data Loading & Parsing
