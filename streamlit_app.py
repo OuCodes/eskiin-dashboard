@@ -244,21 +244,6 @@ def parse_creative_report(content):
     
     data['top_performers'] = top_performers_list
     
-    for match in performer_pattern.finditer(content):
-        performer = {
-            'rank': int(match.group(1)),
-            'cost_per_purchase': float(match.group(2).replace(',', '')),
-            'name': match.group(3).strip(),
-            'spend': float(match.group(4).replace(',', '')),
-            'content_views': int(match.group(5).replace(',', '')),
-            'adds_to_cart': int(match.group(6).replace(',', '')),
-            'checkouts': int(match.group(7).replace(',', '')),
-            'purchases': int(match.group(8).replace(',', '')),
-            'roas': float(match.group(9)),
-            'hook_rate': float(match.group(10))
-        }
-        data['top_performers'].append(performer)
-    
     # Extract location performance
     location_section = re.search(
         r'\|\| Location \| Videos \| Purchases \| Cost/Purchase \| Spend \|\n'
