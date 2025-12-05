@@ -1,18 +1,27 @@
-# 📊 Eskiin Analytics Dashboards
+# 📊 Eskiin Analytics Dashboard
 
-Interactive Streamlit dashboards for visualizing your Eskiin reports.
+Interactive multi-page Streamlit dashboard for visualizing your Eskiin reports.
 
-## 🎯 Available Dashboards
+## 🎯 Live Dashboard
 
-### 1. Creative Performance Dashboard (`streamlit_app.py`)
-Visualizes creative team reports with video analysis, top performers, and location performance.
+👉 **[https://eskiin-dashboard-zoi8agd2au5tk29dkadcru.streamlit.app](https://eskiin-dashboard-zoi8agd2au5tk29dkadcru.streamlit.app)**
 
-**Live:** 👉 **[https://eskiin-dashboard-zoi8agd2au5tk29dkadcru.streamlit.app](https://eskiin-dashboard-zoi8agd2au5tk29dkadcru.streamlit.app)**
+## 📱 Features
 
-### 2. Ad Set Testing Dashboard (`adset_testing_dashboard.py`)
-Visualizes ad set testing reports from creative testing campaigns.
+### Home Page
+Choose between two specialized dashboards
 
-**Deploy this separately or run locally**
+### 🎬 Creative Performance Dashboard
+- Creative team reports with video analysis
+- Top performers with AI insights
+- Hook rates & ROAS analysis
+- Location performance tracking
+
+### 🧪 Ad Set Testing Dashboard
+- Creative testing campaign analysis
+- Ad set performance comparison
+- Budget optimization insights
+- Spend vs ROAS analysis
 
 ## 🚀 Quick Start
 
@@ -21,12 +30,11 @@ Visualizes ad set testing reports from creative testing campaigns.
 # Install dependencies
 pip install -r requirements.txt
 
-# Creative Performance Dashboard
+# Run the app (opens home page)
 streamlit run streamlit_app.py
-
-# Ad Set Testing Dashboard  
-streamlit run adset_testing_dashboard.py
 ```
+
+The app will open at `http://localhost:8501` with a home page where you can choose your dashboard.
 
 ## 📊 Features
 
