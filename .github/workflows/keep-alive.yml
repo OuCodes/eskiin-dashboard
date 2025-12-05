@@ -1,0 +1,16 @@
+name: Keep Streamlit App Alive
+
+on:
+  schedule:
+    # Ping every 10 minutes to prevent sleep
+    - cron: '*/10 * * * *'
+  workflow_dispatch: # Allow manual trigger
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Streamlit App
+        run: |
+          curl -I https://eskiin-dashboard-zoi8agd2au5tk29dkadcru.streamlit.app
+          echo "✅ App pinged successfully at $(date)"
